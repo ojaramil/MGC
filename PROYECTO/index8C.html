@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mirage Global Consortium — Integrated Upstream Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&amp;family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f4f0e6;
+      --paper-2: #e9e3d4;
+      --paper-3: #fbfaf5;
+      --ink: #171b18;
+      --muted: #63685d;
+      --line: #d8cfbc;
+      --line-strong: #bfb49d;
+      --brass: #a7742a;
+      --brass-2: #d3a552;
+      --copper: #7f3b26;
+      --green: #2f6b48;
+      --green-dark: #153f2b;
+      --green-deep: #081c13;
+      --green-wash: #dfe8dc;
+      --near-black: #100f0b;
+      --display: "Fraunces", Georgia, serif;
+      --text: "Archivo", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); font-size: 17px; line-height: 1.62; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+    h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 400; font-optical-sizing: auto; }
+    h1, h2 { letter-spacing: -.015em; }
+    em { font-style: italic; }
+    ::selection { background: var(--brass-2); color: var(--near-black); }
+
+    /* progress */
+    .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 40; background: linear-gradient(90deg, var(--brass), var(--copper), var(--green)); transition: width .1s linear; }
+
+    /* topbar */
+    .topbar { position: fixed; z-index: 30; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px clamp(18px,4vw,60px); background: rgba(244,240,230,.80); backdrop-filter: saturate(150%) blur(14px); border-bottom: 1px solid rgba(216,207,188,.38); transition: border-color .25s, padding .25s, background .25s, box-shadow .25s; }
+    .topbar.scrolled { border-color: var(--line); background: rgba(244,240,230,.96); box-shadow: 0 14px 40px rgba(8,28,19,.12); padding-top: 12px; padding-bottom: 12px; }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .brand img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(8,28,19,.16)); }
+    .brand b { display: block; font-family: var(--display); font-size: clamp(15px,1.5vw,18px); line-height: 1.05; letter-spacing: .01em; }
+    .brand span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .28em; text-transform: uppercase; }
+    .nav { display: flex; gap: clamp(14px,2vw,30px); font-size: 14px; font-weight: 700; letter-spacing: .04em; }
+    .nav a { position: relative; padding: 6px 0; color: var(--muted); transition: color .18s; }
+    .nav a:hover, .nav a.active { color: var(--ink); }
+    .nav a.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--brass); }
+
+    /* hero */
+    .hero { position: relative; min-height: 92vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: 138px clamp(20px,5vw,72px) 60px; color: #f7f0df; background: radial-gradient(circle at 76% 16%, rgba(211,165,82,.24), transparent 28%), linear-gradient(112deg, #061910 0%, #10281b 48%, #080b09 100%); }
+    .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,28,19,.98) 0%, rgba(8,28,19,.72) 47%, rgba(8,28,19,.28) 100%), url("https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&w=1800&q=82") center / cover; opacity: .72; mix-blend-mode: screen; }
+    .hero::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(247,240,223,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(247,240,223,.045) 1px, transparent 1px); background-size: 100% 58px, 140px 100%; mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent); pointer-events: none; }
+    .hero-watermark { position: absolute; right: -7%; top: 8%; width: min(58vw, 700px); opacity: .08; filter: grayscale(1) brightness(3.2); pointer-events: none; transform: rotate(-7deg); }
+    .hero-grid-lines { position: absolute; right: clamp(22px,6vw,92px); bottom: 132px; width: min(34vw, 430px); aspect-ratio: 1; border: 1px solid rgba(211,165,82,.26); background: linear-gradient(135deg, rgba(211,165,82,.18), transparent), repeating-linear-gradient(0deg, rgba(247,240,223,.10) 0 1px, transparent 1px 28px), repeating-linear-gradient(90deg, rgba(247,240,223,.08) 0 1px, transparent 1px 28px); box-shadow: inset 0 0 80px rgba(211,165,82,.12), 0 30px 80px rgba(0,0,0,.26); pointer-events: none; clip-path: polygon(8% 0,100% 0,92% 100%,0 100%); }
+    .hero-inner { position: relative; z-index: 2; width: min(1180px, 100%); margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 14px; color: var(--brass-2); font-size: 11px; font-weight: 800; letter-spacing: .34em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 46px; height: 1px; background: currentColor; }
+    .hero h1 { max-width: 15ch; margin-top: 24px; font-size: clamp(40px,7.3vw,108px); line-height: .92; text-wrap: balance; text-shadow: 0 18px 60px rgba(0,0,0,.34); }
+    .hero h1 em { color: var(--brass-2); }
+    .hero p { max-width: 58ch; margin: 30px 0 0; color: rgba(247,240,223,.84); font-size: clamp(16px,1.4vw,20px); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 15px 28px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; border: 1px solid var(--brass-2); background: var(--brass-2); color: var(--near-black); box-shadow: 0 16px 36px rgba(0,0,0,.18); transition: transform .18s, background .2s, color .2s, border-color .2s; }
+    .btn:hover { transform: translateY(-2px); background: transparent; color: var(--brass-2); border-color: var(--brass-2); }
+    .btn.ghost { background: transparent; color: #f3efe4; border-color: rgba(243,239,228,.35); }
+    .btn.ghost:hover { border-color: #f3efe4; background: rgba(243,239,228,.06); color: #f3efe4; }
+    .hero-scope { position: relative; z-index: 2; width: min(1180px, 100%); margin: 48px auto 0; display: flex; flex-wrap: wrap; border-top: 1px solid rgba(247,240,223,.18); }
+    .hero-scope div { flex: 1; min-width: 150px; padding: 22px 24px 0 0; color: rgba(247,240,223,.62); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .hero-scope b { display: block; font-family: var(--display); font-size: 42px; letter-spacing: 0; color: #f7f0df; margin-bottom: 4px; }
+
+    /* sections */
+    section.block { padding: clamp(76px,10vw,144px) clamp(20px,5vw,72px); border-top: 1px solid var(--line); }
+    .container { width: min(1180px, 100%); margin: 0 auto; }
+    .kicker { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; }
+    .kicker .n { font-family: var(--display); font-size: 15px; letter-spacing: 0; color: var(--brass); }
+    .kicker::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .head { max-width: 60ch; }
+    .head h2 { margin-top: 22px; font-size: clamp(32px,4.8vw,62px); line-height: 1.02; text-wrap: balance; }
+    .head h2 em { color: var(--brass); }
+    .head p { margin-top: 20px; color: var(--muted); font-size: clamp(16px,1.3vw,18px); }
+    .center { margin-left: auto; margin-right: auto; text-align: center; }
+    .center .kicker { justify-content: center; }
+    .center .kicker::after { display: none; }
+
+    /* reveal */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* objective */
+    .objective { background: linear-gradient(180deg, var(--paper-3), var(--paper)); }
+    .mission { position: relative; margin: 54px 0 0; padding: clamp(34px,5vw,66px); background: linear-gradient(135deg, var(--paper-3), var(--paper-2)); border: 1px solid var(--line); border-left: 4px solid var(--brass); box-shadow: 0 28px 70px rgba(23,27,24,.08); overflow: hidden; }
+    .mission::after { content: "MGC"; position: absolute; right: -12px; bottom: -38px; font-family: var(--display); font-size: clamp(80px,13vw,170px); color: rgba(167,116,42,.08); line-height: 1; }
+    .mission p { position: relative; z-index: 1; margin: 0; font-family: var(--display); font-size: clamp(21px,2.6vw,32px); line-height: 1.34; color: var(--green-deep); }
+    .steps4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 30px; }
+    .steps4 div { min-height: 132px; padding: 24px 22px; background: rgba(251,250,245,.72); border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(23,27,24,.045); }
+    .steps4 b { display: block; font-family: var(--display); font-size: 16px; color: var(--brass); }
+    .steps4 span { display: block; margin-top: 34px; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+
+    /* members */
+    .members { background: linear-gradient(155deg, #081c13, #123620 60%, #070c09); color: #f1ede2; }
+    .members .kicker { color: rgba(241,237,226,.6); }
+    .members .kicker::after { background: rgba(241,237,226,.2); }
+    .members .kicker .n { color: var(--brass-2); }
+    .members .head h2 em { color: var(--brass-2); }
+    .members .head p { color: rgba(241,237,226,.72); }
+    .member-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-top: 58px; }
+    .member { position: relative; display: flex; flex-direction: column; gap: 20px; min-height: 340px; padding: clamp(26px,3vw,42px); background: rgba(247,240,223,.055); border: 1px solid rgba(241,237,226,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.04); transition: transform .2s, background .2s, border-color .2s; }
+    .member::before { content: ""; position: absolute; inset: 0; border-top: 3px solid transparent; transition: border-color .2s; pointer-events: none; }
+    .member:hover { transform: translateY(-5px); background: rgba(247,240,223,.085); border-color: rgba(211,165,82,.5); }
+    .member:hover::before { border-color: var(--brass-2); }
+    .member .chip { align-self: flex-start; display: flex; align-items: center; justify-content: center; height: 64px; padding: 8px 16px; background: #f7f0df; border-radius: 3px; box-shadow: 0 18px 40px rgba(0,0,0,.18); }
+    .member .chip img { max-height: 42px; width: auto; object-fit: contain; }
+    .member h3 { font-size: 25px; }
+    .member .role { display: inline-block; margin-top: 8px; color: var(--brass-2); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+    .member p { margin: 4px 0 0; color: rgba(241,237,226,.72); font-size: 14.5px; }
+    .member .value { margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(241,237,226,.16); color: rgba(241,237,226,.9); font-size: 13.5px; }
+    .member .value b { color: #f1ede2; }
+
+    /* collaboration flow */
+    .model { background: var(--paper); }
+    .flow { margin: 62px 0 0; max-width: 980px; }
+    .fstep { position: relative; display: grid; grid-template-columns: 118px 1fr; gap: 32px; padding-bottom: 46px; }
+    .fstep:last-child { padding-bottom: 0; }
+    .fstep::before { content: ""; position: absolute; left: 18px; top: 58px; bottom: 0; width: 1px; background: var(--line-strong); }
+    .fstep:last-child::before { display: none; }
+    .fnum { display: grid; place-items: start; font-family: var(--display); font-size: clamp(34px,4.4vw,56px); color: var(--brass); line-height: .9; }
+    .fstep.accent .fnum { color: var(--green); }
+    .fbody { padding-top: 6px; }
+    .fbody h3 { font-size: 24px; color: var(--green-deep); }
+    .fbody .lead-in { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; }
+    .fbody p { margin: 14px 0 0; color: var(--muted); font-size: 15px; }
+
+    /* value chain strip */
+    .chain { margin-top: 18px; background: var(--paper-3); border: 1px solid var(--line); border-left: 4px solid var(--green); padding: 30px clamp(18px,4vw,42px); box-shadow: 0 20px 50px rgba(23,27,24,.07); }
+    .chain h3 { font-size: 19px; color: var(--green-deep); line-height: 1.4; }
+    .chain-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+    .chain-row span { padding: 9px 15px; background: var(--paper); border: 1px solid var(--line); font-family: var(--text); font-size: 12.5px; font-weight: 600; color: var(--green-dark); }
+    .chain-row i { color: var(--brass); font-style: normal; font-weight: 700; }
+
+    /* business lines */
+    .business { color: #f1ede2; background: linear-gradient(145deg, var(--green-dark), #0d2418 56%, #141008); }
+    .business .kicker { color: rgba(241,237,226,.6); }
+    .business .kicker::after { background: rgba(241,237,226,.2); }
+    .business .kicker .n { color: var(--brass-2); }
+    .business .head p { color: rgba(241,237,226,.72); }
+    .lines { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-top: 58px; }
+    .line { display: flex; flex-direction: column; min-height: 410px; padding: clamp(26px,3vw,38px); background: rgba(247,240,223,.06); border: 1px solid rgba(241,237,226,.16); transition: transform .2s, background .2s, border-color .2s; }
+    .line:hover { transform: translateY(-5px); background: rgba(247,240,223,.09); border-color: rgba(211,165,82,.48); }
+    .line .tag { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--brass-2); }
+    .line h3 { margin-top: 14px; font-size: 23px; line-height: 1.16; }
+    .line ul { margin: 22px 0 0; padding: 0; list-style: none; }
+    .line li { padding: 11px 0; border-bottom: 1px solid rgba(241,237,226,.12); color: rgba(241,237,226,.82); font-size: 14px; }
+    .line li:last-child { border-bottom: 0; }
+
+    /* pathway */
+    .pathway { background: linear-gradient(180deg, var(--paper-2), #ded5c3); }
+    .path-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; margin-top: 54px; counter-reset: p; }
+    .path-item { position: relative; display: grid; place-items: center; min-height: 142px; padding: 30px 14px 24px; background: var(--paper-3); border: 1px solid var(--line); text-align: center; font-family: var(--text); font-size: 13px; font-weight: 800; color: var(--green-dark); box-shadow: 0 18px 40px rgba(23,27,24,.055); }
+    .path-item + .path-item { margin-top: 18px; }
+    .path-item:nth-child(2n) { margin-top: 0; }
+    .path-item::before { counter-increment: p; content: counter(p, decimal-leading-zero); position: absolute; top: 10px; left: 12px; font-family: var(--display); font-size: 12px; color: var(--brass); }
+
+    /* monetization */
+    .monet { background: var(--paper); }
+    .mgrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 54px; }
+    .mgrid span { display: grid; grid-template-rows: 44px 1fr; align-items: center; justify-items: center; min-height: 142px; padding: 24px 18px; background: linear-gradient(135deg, var(--green-wash), var(--paper-3)); border: 1px solid var(--line); color: var(--green-deep); font-weight: 800; font-size: 14px; line-height: 1.25; text-align: center; box-shadow: 0 14px 34px rgba(23,27,24,.045); transition: transform .2s, border-color .2s, box-shadow .2s; }
+    .mgrid span:hover { transform: translateY(-4px); border-color: var(--brass); box-shadow: 0 22px 46px rgba(23,27,24,.09); }
+    .mgrid svg { width: 30px; height: 30px; color: var(--brass); stroke-width: 1.7; }
+
+    /* advantage */
+    .advantage { background: var(--paper-2); }
+    .quotes { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-top: 54px; }
+    .quote { position: relative; min-height: 190px; padding: clamp(30px,3.6vw,46px); background: var(--paper-3); border: 1px solid var(--line); box-shadow: 0 22px 56px rgba(23,27,24,.06); overflow: hidden; }
+    .quote::after { content: ""; position: absolute; right: 24px; top: 24px; width: 42px; height: 42px; border-top: 2px solid var(--brass); border-right: 2px solid var(--brass); opacity: .4; }
+    .quote strong { display: block; font-family: var(--display); font-size: 22px; color: var(--green-dark); }
+    .quote span { display: block; margin-top: 14px; color: var(--ink); font-family: var(--display); font-style: italic; font-size: 18px; line-height: 1.42; }
+
+    /* closing */
+    .closing { background: var(--paper); }
+    .closing-panel { position: relative; padding: clamp(50px,8vw,104px); text-align: center; color: #f1ede2; background: linear-gradient(145deg, #071a11, #123a26 58%, #141008); border: 1px solid rgba(211,165,82,.28); box-shadow: 0 28px 80px rgba(23,27,24,.14); overflow: hidden; }
+    .closing-panel::before { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(247,240,223,.12); pointer-events: none; }
+    .closing-panel img { width: 72px; height: 72px; object-fit: contain; margin-bottom: 28px; filter: brightness(0) invert(1); opacity: .9; }
+    .closing-panel h2 { max-width: 940px; margin: 0 auto; font-size: clamp(26px,3.6vw,44px); line-height: 1.18; }
+    .closing-panel h2 em { color: var(--brass-2); }
+    .closing-panel p { max-width: 62ch; margin: 24px auto 0; color: rgba(241,237,226,.78); font-size: 16px; }
+
+    /* film */
+    .film { background: var(--paper-2); }
+    .film .kicker::after { display: none; }
+    .film-frame { position: relative; width: min(1040px, 100%); margin: 50px auto 0; aspect-ratio: 16 / 9; background: var(--green-deep) center / cover no-repeat; border: 1px solid var(--line-strong); box-shadow: 0 28px 80px rgba(23,27,24,.18); overflow: hidden; }
+    .film-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(14,35,24,.55), rgba(14,35,24,.1)); }
+    .film-frame.playing::after { display: none; }
+    .film-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .film-play { position: absolute; z-index: 2; top: 50%; left: 50%; transform: translate(-50%,-50%); display: grid; place-items: center; width: 78px; height: 78px; border-radius: 50%; border: 0; background: var(--brass); color: var(--near-black); font-size: 20px; cursor: pointer; transition: transform .15s, background .2s; }
+    .film-play:hover { transform: translate(-50%,-50%) scale(1.06); background: var(--brass-2); }
+    .film-frame.playing .film-play { display: none; }
+
+    /* cta / contact */
+    .cta { text-align: center; color: #f1ede2; background: radial-gradient(circle at 50% 0, rgba(211,165,82,.22), transparent 34%), linear-gradient(150deg, #071a11, #123620 66%, #0b0b08); }
+    .cta .kicker { justify-content: center; color: var(--brass-2); }
+    .cta .kicker::after { display: none; }
+    .cta h2 { margin-top: 18px; font-size: clamp(28px,4vw,48px); line-height: 1.12; }
+    .cta h2 em { color: var(--brass-2); }
+    .cta p { max-width: 60ch; margin: 22px auto 0; color: rgba(241,237,226,.8); font-size: 17px; }
+    .cta .hero-actions { justify-content: center; margin-top: 38px; }
+    .cta-meta { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: center; color: rgba(241,237,226,.55); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .cta-meta a { color: #f1ede2; border-bottom: 1px solid rgba(241,237,226,.4); }
+
+    footer.site { padding: 36px clamp(20px,5vw,72px); border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; background: var(--paper); }
+
+    @media (max-width: 980px) {
+      .nav { display: none; }
+      .member-grid, .lines, .quotes, .steps4 { grid-template-columns: 1fr 1fr; }
+      .path-row { grid-template-columns: repeat(2,1fr); }
+      .mgrid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .member-grid, .lines, .quotes, .steps4, .mgrid, .path-row { grid-template-columns: 1fr; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .fstep { grid-template-columns: 54px 1fr; gap: 18px; }
+      .fstep::before { left: 11px; top: 46px; }
+      .hero-scope div { min-width: 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#top">
+      <img src="logo-3.png" alt="Mirage Global Consortium">
+      <span><b>Mirage Global Consortium</b><span>Integrated Upstream Platform</span></span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#objective">Objective</a>
+      <a href="#members">Members</a>
+      <a href="#model">Model</a>
+      <a href="#business">Business</a>
+      <a href="#advantage">Advantage</a>
+      <a href="#film">Film</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="top">
+    <img class="hero-watermark" src="logo-3.png" alt="">
+    <div class="hero-grid-lines"></div>
+    <div class="hero-inner">
+      <div class="eyebrow">Consortium Brief</div>
+      <h1>An integrated <em>upstream</em> platform for oil &amp; gas value creation</h1>
+      <p>Mirage Global unites four complementary companies to identify, evaluate, acquire, finance, develop, operate and monetize oil and gas assets in Colombia and, potentially, international markets.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#objective">Main Objective</a>
+        <a class="btn ghost" href="#model">Collaboration Model</a>
+      </div>
+    </div>
+    <div class="hero-scope">
+      <div><b>4</b> member companies</div>
+      <div><b>3</b> business lines</div>
+      <div><b>1</b> coordinated platform</div>
+    </div>
+  </section>
+
+  <main>
+    <!-- OBJECTIVE -->
+    <section class="block objective" id="objective">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker"><span class="n">01</span> Purpose of the consortium</div>
+          <h2>Create an integrated upstream oil &amp; gas platform</h2>
+          <p>The consortium is established to identify, evaluate, acquire, finance, develop, operate and monetize oil and gas assets — combining sourcing, technical evaluation, capital structure, operations and monetization in one coordinated platform.</p>
+        </div>
+        <div class="mission reveal">
+          <p>To create an integrated upstream oil and gas platform capable of sourcing petroleum opportunities, technically evaluating them, structuring and financing acquisitions, developing reserves and resources, and operating and monetizing producing and exploration assets.</p>
+        </div>
+        <div class="steps4 reveal">
+          <div><b>01</b><span>Identify &amp; evaluate</span></div>
+          <div><b>02</b><span>Acquire &amp; finance</span></div>
+          <div><b>03</b><span>Develop &amp; operate</span></div>
+          <div><b>04</b><span>Monetize or retain</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="block members" id="members">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker"><span class="n">02</span> Consortium members</div>
+          <h2>Four complementary capabilities</h2>
+          <p>No single company has to provide everything. Each member contributes a distinct, defensible piece of the upstream equation.</p>
+        </div>
+        <div class="member-grid">
+          <article class="member reveal">
+            <div class="chip"><img src="3.png" alt="SueloPetrol"></div>
+            <div><h3>SueloPetrol</h3><span class="role">Field operator</span></div>
+            <p>Operating capability, production, field management, HSE, facilities and regulatory execution.</p>
+            <div class="value"><b>Value contributed —</b> operations, production and field management on the ground.</div>
+          </article>
+          <article class="member reveal">
+            <div class="chip"><img src="2.png" alt="PMIG"></div>
+            <div><h3>PMIG</h3><span class="role">Financial / investment arm</span></div>
+            <p>Petroleum Management &amp; Investment Group: capital structuring, investors, project economics, M&amp;A, financing and investment strategy.</p>
+            <div class="value"><b>Value contributed —</b> capital, investor structure and acquisition economics.</div>
+          </article>
+          <article class="member reveal">
+            <div class="chip"><img src="4.png" alt="DinoPetrol"></div>
+            <div><h3>DinoPetrol SAS</h3><span class="role">Subsurface &amp; facilities specialist</span></div>
+            <p>Production facilities design and construction, fluid separation and treatment, multiphase measurement (static and dynamic), production optimization integrated systems.</p>
+            <div class="value"><b>Value contributed —</b> technical due diligence and subsurface development design.</div>
+          </article>
+          <article class="member reveal">
+            <div class="chip"><img src="1.png" alt="Hedap Global Exchange Inc."></div>
+            <div><h3>Hedap Global Exchange Inc.</h3><span class="role">Exploration &amp; international business development</span></div>
+            <p>Geological opportunity generation, exploration strategy, international relationships, asset sourcing and commercialization.</p>
+            <div class="value"><b>Value contributed —</b> opportunity flow and international deal sourcing.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODEL -->
+    <section class="block model" id="model">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker"><span class="n">03</span> How the four companies work together</div>
+          <h2>From opportunity to value creation</h2>
+          <p>The consortium operates almost like a vertically integrated upstream investment company — each stage handed cleanly to the member that owns it.</p>
+        </div>
+        <div class="flow">
+          <div class="fstep reveal">
+            <div class="fnum">01</div>
+            <div class="fbody">
+              <h3>Hedap Global Exchange Inc.</h3>
+              <span class="lead-in">Sources opportunities</span>
+              <p>Fields, blocks, farm-ins, discoveries, prospects and distressed or underdeveloped assets.</p>
+            </div>
+          </div>
+          <div class="fstep reveal">
+            <div class="fnum">02</div>
+            <div class="fbody">
+              <h3>PMIG</h3>
+              <span class="lead-in">Investment &amp; financing</span>
+              <p>CAPEX &rarr; OPEX &rarr; production profile &rarr; NPV &rarr; IRR &rarr; valuation &rarr; financing &rarr; investor / fund structure &rarr; acquisition strategy.</p>
+            </div>
+          </div>
+          <div class="fstep reveal">
+            <div class="fnum">03</div>
+            <div class="fbody">
+              <h3>SueloPetrol</h3>
+              <span class="lead-in">Execution &amp; operations</span>
+              <p>Drilling &rarr; completion &rarr; production &rarr; facilities &rarr; transportation &rarr; HSE &rarr; field optimization &rarr; production growth.</p>
+            </div>
+          </div>
+          <div class="fstep reveal">
+            <div class="fnum">04</div>
+            <div class="fbody">
+              <h3>DinoPetrol SAS</h3>
+              <span class="lead-in">Technical due diligence</span>
+              <p>Production facilities design and construction, fluid separation and treatment, simulation processes, pumping and water injection, multiphase measurement (static and dynamic), production optimization integrated systems.</p>
+            </div>
+          </div>
+          <div class="fstep accent reveal">
+            <div class="fnum">05</div>
+            <div class="fbody">
+              <h3>The Consortium</h3>
+              <span class="lead-in">Value creation</span>
+              <div class="chain">
+                <h3>Acquire &rarr; appraise &rarr; develop &rarr; increase production / reserves &rarr; monetize or retain</h3>
+                <div class="chain-row">
+                  <span>Acquire</span><i>&rarr;</i><span>Appraise</span><i>&rarr;</i><span>Develop</span><i>&rarr;</i><span>Increase production &amp; reserves</span><i>&rarr;</i><span>Monetize or retain</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUSINESS -->
+    <section class="block business" id="business">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker"><span class="n">04</span> Business platform</div>
+          <h2>Three connected business lines</h2>
+          <p>The consortium can move across acquisition, exploration and capital events while keeping technical, financial and operational execution aligned.</p>
+        </div>
+        <div class="lines">
+          <article class="line reveal">
+            <span class="tag">Line A</span>
+            <h3>Asset Acquisition &amp; Development</h3>
+            <ul>
+              <li>Producing fields</li>
+              <li>Discovered undeveloped fields</li>
+              <li>Mature fields with redevelopment potential</li>
+              <li>Exploration blocks</li>
+              <li>Farm-in opportunities</li>
+            </ul>
+            <p style="margin-top:20px;color:rgba(241,237,226,.7);font-size:13px">Then improve production and reserves.</p>
+          </article>
+          <article class="line reveal">
+            <span class="tag">Line B</span>
+            <h3>Exploration</h3>
+            <ul>
+              <li>Prospective resource</li>
+              <li>Discovery</li>
+              <li>Appraisal</li>
+              <li>Contingent resource</li>
+              <li>Development &rarr; reserves &rarr; production</li>
+            </ul>
+          </article>
+          <article class="line reveal">
+            <span class="tag">Line C</span>
+            <h3>Investment &amp; Monetization</h3>
+            <ul>
+              <li>Hold or sell assets</li>
+              <li>Farm out interests</li>
+              <li>Bring in strategic investors</li>
+              <li>Create project-level JVs</li>
+              <li>Raise institutional capital</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PATHWAY -->
+    <section class="block pathway">
+      <div class="container">
+        <div class="head center reveal">
+          <div class="kicker"><span class="n">05</span> Exploration line</div>
+          <h2>Prospective resource to production</h2>
+        </div>
+        <div class="path-row reveal">
+          <div class="path-item">Prospective Resource</div>
+          <div class="path-item">Discovery</div>
+          <div class="path-item">Appraisal</div>
+          <div class="path-item">Contingent Resource</div>
+          <div class="path-item">Development</div>
+          <div class="path-item">Reserves</div>
+          <div class="path-item">Production</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MONETIZATION -->
+    <section class="block monet">
+      <div class="container">
+        <div class="head center reveal">
+          <div class="kicker"><span class="n">06</span> Capital events</div>
+          <h2>Investment &amp; monetization options</h2>
+          <p>The consortium can ultimately choose how and when to realize value.</p>
+        </div>
+        <div class="mgrid reveal">
+          <span><i data-lucide="landmark" aria-hidden="true"></i>Hold assets</span>
+          <span><i data-lucide="hand-coins" aria-hidden="true"></i>Sell assets</span>
+          <span><i data-lucide="split" aria-hidden="true"></i>Farm out interests</span>
+          <span><i data-lucide="users-round" aria-hidden="true"></i>Bring in strategic investors</span>
+          <span><i data-lucide="network" aria-hidden="true"></i>Create project-level JVs</span>
+          <span><i data-lucide="chart-candlestick" aria-hidden="true"></i>Raise institutional capital</span>
+          <span><i data-lucide="fuel" aria-hidden="true"></i>Develop and sell reserves</span>
+          <span><i data-lucide="briefcase-business" aria-hidden="true"></i>Build a portfolio of producing assets</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANTAGE -->
+    <section class="block advantage" id="advantage">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker"><span class="n">07</span> Biggest strategic advantage</div>
+          <h2>No single company has to provide everything</h2>
+          <p>The most powerful concept in the structure: each member owns a clear part of the investment and operating equation. An investor sees four confident answers to four hard questions.</p>
+        </div>
+        <div class="quotes">
+          <div class="quote reveal"><strong>Hedap</strong><span>&ldquo;We can find the opportunity.&rdquo;</span></div>
+          <div class="quote reveal"><strong>PMIG</strong><span>&ldquo;We can determine whether it is economically attractive and structure the capital.&rdquo;</span></div>
+          <div class="quote reveal"><strong>SueloPetrol</strong><span>&ldquo;We can operate and develop the asset.&rdquo;</span></div>
+          <div class="quote reveal"><strong>DinoPetrol</strong><span>&ldquo;We can determine the best way to develop the subsurface.&rdquo;</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="block closing">
+      <div class="container">
+        <div class="closing-panel reveal">
+          <img src="logo-3.png" alt="Mirage Global Consortium">
+          <h2>Four complementary capabilities — asset operations, subsurface technology, investment and financing, and exploration / business development — brought together to <em>create value</em>.</h2>
+          <p>The consortium identifies undervalued oil and gas opportunities, transforms geological potential into commercially viable projects, and creates value through acquisition, development, production and monetization.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILM -->
+    <section class="block film" id="film">
+      <div class="container">
+        <div class="head center reveal">
+          <div class="kicker" style="justify-content:center">The consortium in motion</div>
+          <h2>See the platform in one minute</h2>
+          <p style="margin-left:auto;margin-right:auto">A short overview of how four complementary companies source, evaluate, finance, develop and monetize upstream oil &amp; gas assets.</p>
+        </div>
+        <div class="film-frame reveal" id="filmFrame" style="background-image:url('https://img.youtube.com/vi/-shaTZbX8K0/maxresdefault.jpg')">
+          <button class="film-play" type="button" id="filmPlay" aria-label="Play film">&#9654;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA / CONTACT -->
+    <section class="block cta" id="contact">
+      <div class="container reveal">
+        <div class="kicker">Contact</div>
+        <h2>Let&rsquo;s discuss an <em>upstream</em> opportunity</h2>
+        <p>If you hold, source or finance oil &amp; gas assets in Colombia or international markets, the consortium is open to conversations on acquisition, farm-in, joint venture and investment.</p>
+        <div class="hero-actions">
+          <a class="btn" href="mailto:info@mirageglobalconsortium.com?subject=Upstream%20opportunity">Contact the consortium</a>
+          <a class="btn ghost" href="#members">Review the members</a>
+        </div>
+        <div class="cta-meta">
+          <span><a href="mailto:info@mirageglobalconsortium.com">info@mirageglobalconsortium.com</a></span>
+          <span>Bogot&aacute;, Colombia</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    <span>Mirage Global Consortium</span>
+    <span>Oil &amp; Gas Assets</span>
+    <span>Colombia &amp; International Markets</span>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // progress + topbar shadow
+    var progress = document.getElementById('progress');
+    var topbar = document.getElementById('topbar');
+    function onScroll() {
+      var h = document.documentElement;
+      var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      progress.style.width = (pct * 100) + '%';
+      topbar.classList.toggle('scrolled', h.scrollTop > 20);
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // reveal on scroll
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+    // scroll-spy nav
+    var links = Array.prototype.slice.call(document.querySelectorAll('#nav a'));
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (l) {
+            l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    ['objective', 'members', 'model', 'business', 'advantage', 'film', 'contact'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) spy.observe(el);
+    });
+
+    // film block: load iframe only on click
+    var filmFrame = document.getElementById('filmFrame');
+    document.getElementById('filmPlay').addEventListener('click', function () {
+      filmFrame.classList.add('playing');
+      filmFrame.innerHTML = '<iframe src="https://www.youtube.com/embed/-shaTZbX8K0?autoplay=1&rel=0&playsinline=1" title="Mirage Global Consortium film" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+    });
+  </script>
+</body>
+</html>
